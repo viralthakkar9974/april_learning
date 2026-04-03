@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auth</title>
+  <script>
+    async function signup(){
+      const username=document.getElementById("signup-name").value;
+      const password=document.getElementById("signup-password").value;
+
+      const res=await fetch("http://localhost:3000/signup",
+        {
+          method:"POST",
+          headers: {
+        "Content-Type": "application/json"
+          },
+          body:JSON.stringify({
+            username:username,
+            password:password
+          })
+        }
+      );  
+
+      const data=await res.json();
+      console.log(data);
+      
+
+      alert("signup");
+    }
+
+    async function signin() {
+
+      const username=document.getElementById("signin-name").value;
+      const password=document.getElementById("signin-password").value;
+      
+      const res=await fetch("http://localhost:3000/signin",{
+        method:"POST",
+         headers: {
+        "Content-Type": "application/json"
+          },
+        body:JSON.stringify({
+          username,
+          password
+        })
+      })
+
+      const data=await res.json();
+
+      localStorage.setItem("token",data.token)
+
+    }
+
+    async function getuser(params) {
+      const res=await fetch("http://localhost:3000/me",{
+        headers:{ 
+          token:localStorage.getItem("token")
+        }
+      }) 
+    }
+    if (localStorage.getItem("token")) {
+  getuser();
+}else{
+  console.log("erro");
+  
+}
+
+  </script>
+</head>
+<body>
+  <div>
+    signup
+    <input type="text" id="signup-name" name="username" placeholder="username">
+    <input type="text" id="signup-password" name="password" placeholder="password">
+    <button onclick="signup()">Submit</button>
+  </div>
+  <div>
+    signin
+    <input type="text" name="uasername" id="signin-name" placeholder="username">
+    <input type="text" name="password" id="signin-password" placeholder="password">
+    <button onclick="signin()">Submit</button>
+  </div>
+  <div>
+    user info
+    <div id="info">
+    </div>
+  </div>
+  <div>
+    <button onclick="logout()">Logout</button>
+  </div>
+</body>
+</html>
